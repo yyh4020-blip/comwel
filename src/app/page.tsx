@@ -11,7 +11,7 @@ interface WorkItem {
   title: string
   category: Category
   icon: string
-  imagePaths: string[]     // ✅ 변경: 다중 이미지 지원
+  imagePaths: string[]
   description: string
   shortDesc: string
 }
@@ -22,7 +22,7 @@ const workData: WorkItem[] = [
     title: '기금제도 푸른씨앗 신청하기',
     category: '신청하기',
     icon: '🌱',
-    imagePaths: ['/images/008.jpg', '/images/009.jpg', '/images/010.jpg', '/images/011.jpg'],
+    imagePaths: ['/images/004.jpg', '/images/005.jpg', '/images/006.jpg', '/images/007.jpg', '/images/008.jpg', '/images/009.jpg', '/images/010.jpg', '/images/011.jpg'],
     description: '푸른씨앗 기금제도 신청 절차 및 필요 서류 안내',
     shortDesc: '푸른씨앗 신청'
   },
@@ -31,7 +31,7 @@ const workData: WorkItem[] = [
     title: '신규직원 등록하기',
     category: '직원관리',
     icon: '👤',
-    imagePaths: ['/images/013.jpg', '/images/014.jpg', '/images/015.jpg', '/images/016.jpg',],
+    imagePaths: ['/images/013.jpg', '/images/014.jpg', '/images/015.jpg', '/images/016.jpg'],
     description: '신규 직원 등록 절차 및 필수 입력 정보 안내',
     shortDesc: '직원 등록'
   },
@@ -40,7 +40,7 @@ const workData: WorkItem[] = [
     title: '급여변경하기',
     category: '직원관리',
     icon: '💰',
-    imagePaths: ['/images/017.jpg',],
+    imagePaths: ['/images/017.jpg'],
     description: '직원 급여 변경 신청 및 처리 절차 안내',
     shortDesc: '급여 변경'
   },
@@ -49,7 +49,7 @@ const workData: WorkItem[] = [
     title: '퇴사 - 지급신청',
     category: '직원관리',
     icon: '📋',
-    imagePaths: ['/images/026.jpg', '/images/027.jpg',],
+    imagePaths: ['/images/026.jpg', '/images/027.jpg'],
     description: '퇴직금 지급 신청 절차 및 필요 서류 안내',
     shortDesc: '퇴사 지급신청'
   },
@@ -67,7 +67,7 @@ const workData: WorkItem[] = [
     title: '사용자 납입 희망 금액 수시납부 처리하기',
     category: '부담금',
     icon: '💳',
-    imagePaths: ['/images/018.jpg', '/images/019.jpg',],
+    imagePaths: ['/images/018.jpg', '/images/019.jpg'],
     description: '수시 납부 신청 및 처리 방법 안내',
     shortDesc: '수시 납부'
   },
@@ -76,7 +76,7 @@ const workData: WorkItem[] = [
     title: '(과거분) 일시전환부담금 납입신청',
     category: '부담금',
     icon: '📅',
-    imagePaths: ['/images/023.jpg', '/images/024.jpg',],
+    imagePaths: ['/images/023.jpg', '/images/024.jpg'],
     description: '과거분 일시전환부담금 납입 신청 절차',
     shortDesc: '과거분 납입'
   },
@@ -85,7 +85,7 @@ const workData: WorkItem[] = [
     title: '(해당기간 ~ 연 1회) 부담금 정산신청하기',
     category: '부담금',
     icon: '📊',
-    imagePaths: ['/images/020.jpg', '/images/021.jpg', '/images/022.jpg',],
+    imagePaths: ['/images/020.jpg', '/images/021.jpg', '/images/022.jpg'],
     description: '연간 부담금 정산 신청 절차 및 기한 안내',
     shortDesc: '정산 신청'
   },
@@ -181,16 +181,26 @@ const categoryColors: Record<Category, string> = {
 }
 
 export default function Home() {
-  const [selectedWork, setSelectedWork] = useState<WorkItem>(workData[0])
+  const [selectedWork, setSelectedWork] = useState<WorkItem | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<Category | '전체'>('전체')
   const [currentImage, setCurrentImage] = useState(0)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const touchStartXRef = useRef<number | null>(null)
 
-  // Work 변경 시 인덱스 리셋 (안전망)
+  // 선택 변경 시 인덱스 리셋
   useEffect(() => {
     setCurrentImage(0)
-  }, [selectedWork])
+  }, [selectedWork?.id])
+
+  // Esc로 모달 닫기
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsModalOpen(false)
+    }
+    if (isModalOpen) window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [isModalOpen])
 
   const filteredWorks = useMemo(
     () => selectedCategory === '전체'
@@ -201,11 +211,11 @@ export default function Home() {
 
   const categories: (Category | '전체')[] = ['전체', '신청하기', '직원관리', '부담금', '재정지원', '기타']
 
-  // 캐러셀 정보
-  const total = selectedWork.imagePaths.length
+  // 캐러셀 계산 (모달 내에서 사용)
+  const total = selectedWork ? selectedWork.imagePaths.length : 0
   const hasMultiple = total > 1
   const clampedIndex = total ? Math.min(currentImage, total - 1) : 0
-  const currentSrc = total ? selectedWork.imagePaths[clampedIndex] : null
+  const currentSrc = total ? selectedWork!.imagePaths[clampedIndex] : null
 
   const goPrev = () => {
     if (!total) return
@@ -215,8 +225,12 @@ export default function Home() {
     if (!total) return
     setCurrentImage(i => (i + 1) % total)
   }
+  const goTo = (idx: number) => {
+    if (!total) return
+    setCurrentImage(Math.max(0, Math.min(idx, total - 1)))
+  }
 
-  const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+  const onKeyDownCarousel: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
     if (!hasMultiple) return
     if (e.key === 'ArrowLeft') goPrev()
     if (e.key === 'ArrowRight') goNext()
@@ -266,12 +280,13 @@ export default function Home() {
           {filteredWorks.map((work) => (
             <button
               key={work.id}
-              className={`${styles.workCard} ${selectedWork.id === work.id ? styles.selected : ''}`}
+              className={`${styles.workCard} ${selectedWork?.id === work.id && isModalOpen ? styles.selected : ''}`}
               onClick={() => {
                 setSelectedWork(work)
-                setCurrentImage(0) // 전환 시 즉시 리셋
+                setCurrentImage(0)
+                setIsModalOpen(true)
               }}
-              style={{ borderColor: selectedWork.id === work.id ? categoryColors[work.category] : 'transparent' }}
+              style={{ borderColor: selectedWork?.id === work.id && isModalOpen ? categoryColors[work.category] : 'transparent' }}
             >
               <div className={styles.categoryTag} style={{ backgroundColor: categoryColors[work.category] }}>
                 {work.category}
@@ -282,107 +297,122 @@ export default function Home() {
             </button>
           ))}
         </div>
+      </div>
 
-        {/* 선택된 업무 상세 */}
-        <div className={styles.detailSection}>
-          <div className={styles.detailHeader}>
-            <span
-              className={styles.detailCategory}
-              style={{ backgroundColor: categoryColors[selectedWork.category] }}
-            >
-              {selectedWork.category}
-            </span>
-            <h2 className={styles.detailTitle}>{selectedWork.title}</h2>
-            <p className={styles.detailDescription}>{selectedWork.description}</p>
-          </div>
+      {/* 모달 */}
+      {isModalOpen && selectedWork && (
+        <div
+          className={styles.modalOverlay}
+          onClick={(e) => {
+            // 배경 클릭 시 닫기 (모달 내부 클릭은 유지)
+            if (e.target === e.currentTarget) setIsModalOpen(false)
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selectedWork.title} 상세 안내`}
+        >
+          <div className={styles.modal}>
+            <header className={styles.modalHeader} style={{ borderColor: categoryColors[selectedWork.category] }}>
+              <span className={styles.detailCategory} style={{ backgroundColor: categoryColors[selectedWork.category] }}>
+                {selectedWork.category}
+              </span>
+              <h2 className={styles.detailTitle}>{selectedWork.title}</h2>
+              <button className={styles.closeBtn} aria-label="닫기" onClick={() => setIsModalOpen(false)}>×</button>
+            </header>
 
-          {/* 이미지 캐러셀 */}
-          <div className={styles.imageContainer}>
-            <div
-              className={`${styles.imageWrapper} ${styles.carousel}`}
-              tabIndex={0}
-              onKeyDown={onKeyDown}
-              onTouchStart={onTouchStart}
-              onTouchEnd={onTouchEnd}
-              aria-roledescription="carousel"
-              aria-label={`${selectedWork.title} 이미지 갤러리`}
-            >
-              <div className={styles.imagePlaceholder}>
-                {currentSrc ? (
-                  <Image
-                    key={currentSrc}
-                    src={currentSrc}
-                    alt={`${selectedWork.title} 안내 이미지 ${clampedIndex + 1}/${total}`}
-                    width={900}
-                    height={600}
-                    className={styles.guideImage}
-                    priority
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.style.display = 'none'
-                      const parent = target.parentElement
-                      if (parent) {
-                        parent.innerHTML = `
-                          <div style="
-                            display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;
-                            background:#f5f5f5;color:#666;padding:2rem;text-align:center
-                          ">
-                            <div style="font-size:3rem;margin-bottom:1rem;">${selectedWork.icon}</div>
-                            <h3 style="margin-bottom:1rem;">${selectedWork.title}</h3>
-                            <p style="color:#999;">이미지 파일 위치: ${selectedWork.imagePaths.join(', ')}</p>
-                            <p style="color:#999;font-size:0.9rem;margin-top:0.5rem;">public 폴더에 해당 이미지를 추가해주세요</p>
-                          </div>
-                        `
-                      }
-                    }}
-                  />
-                ) : (
-                  <div style={{ padding: '2rem', color: '#999', textAlign: 'center' }}>
-                    이미지가 없습니다
+            <div className={styles.modalBody}>
+              <p className={styles.detailDescription}>{selectedWork.description}</p>
+
+              <div className={styles.imageContainer}>
+                <div
+                  className={`${styles.imageWrapper} ${styles.carousel}`}
+                  tabIndex={0}
+                  onKeyDown={onKeyDownCarousel}
+                  onTouchStart={onTouchStart}
+                  onTouchEnd={onTouchEnd}
+                  aria-roledescription="carousel"
+                  aria-label={`${selectedWork.title} 이미지 갤러리`}
+                >
+                  <div className={styles.imagePlaceholder}>
+                    {currentSrc ? (
+                      <Image
+                        key={currentSrc}
+                        src={currentSrc}
+                        alt={`${selectedWork.title} 안내 이미지 ${clampedIndex + 1}/${total}`}
+                        width={900}
+                        height={600}
+                        className={styles.guideImage}
+                        priority
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.style.display = 'none'
+                          const parent = target.parentElement
+                          if (parent) {
+                            parent.innerHTML = `
+                              <div style="
+                                display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;
+                                background:#f5f5f5;color:#666;padding:2rem;text-align:center
+                              ">
+                                <div style="font-size:3rem;margin-bottom:1rem;">${selectedWork.icon}</div>
+                                <h3 style="margin-bottom:1rem;">${selectedWork.title}</h3>
+                                <p style="color:#999;">이미지 파일 위치: ${selectedWork.imagePaths.join(', ')}</p>
+                                <p style="color:#999;font-size:0.9rem;margin-top:0.5rem;">public 폴더에 해당 이미지를 추가해주세요</p>
+                              </div>
+                            `
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div style={{ padding: '2rem', color: '#999', textAlign: 'center' }}>
+                        이미지가 없습니다
+                      </div>
+                    )}
+
+                    {hasMultiple && (
+                      <>
+                        <button className={`${styles.navBtn} ${styles.prev}`} onClick={goPrev} aria-label="이전 이미지">‹</button>
+                        <button className={`${styles.navBtn} ${styles.next}`} onClick={goNext} aria-label="다음 이미지">›</button>
+                      </>
+                    )}
                   </div>
-                )}
 
-                {hasMultiple && (
-                  <>
-                    <button
-                      className={`${styles.navBtn} ${styles.prev}`}
-                      onClick={goPrev}
-                      aria-label="이전 이미지"
-                    >
-                      ‹
-                    </button>
-                    <button
-                      className={`${styles.navBtn} ${styles.next}`}
-                      onClick={goNext}
-                      aria-label="다음 이미지"
-                    >
-                      ›
-                    </button>
-                  </>
-                )}
+                  {hasMultiple && (
+                    <div className={styles.dots} role="tablist" aria-label="이미지 선택">
+                      {selectedWork.imagePaths.map((_, idx) => (
+                        <button
+                          key={idx}
+                          role="tab"
+                          aria-selected={currentImage === idx}
+                          aria-label={`${idx + 1}번째 이미지 보기`}
+                          className={`${styles.dot} ${currentImage === idx ? styles.activeDot : ''}`}
+                          onClick={() => goTo(idx)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* 추가 정보 */}
-            <div className={styles.additionalInfo}>
-              <div className={styles.infoCard}>
-                <h4>📌 주의사항</h4>
-                <ul>
-                  <li>모든 신청은 영업일 기준으로 처리됩니다</li>
-                  <li>필수 서류를 반드시 준비해주세요</li>
-                  <li>문의사항은 담당자에게 연락바랍니다</li>
-                </ul>
-              </div>
-              <div className={styles.infoCard}>
-                <h4>📞 문의</h4>
-                <p>업무 담당자: 02-1234-5678</p>
-                <p>이메일: support@company.com</p>
-                <p>운영시간: 평일 09:00 ~ 18:00</p>
+              <div className={styles.additionalInfo}>
+                <div className={styles.infoCard}>
+                  <h4>📌 주의사항</h4>
+                  <ul>
+                    <li>모든 신청은 영업일 기준으로 처리됩니다</li>
+                    <li>필수 서류를 반드시 준비해주세요</li>
+                    <li>문의사항은 담당자에게 연락바랍니다</li>
+                  </ul>
+                </div>
+                <div className={styles.infoCard}>
+                  <h4>📞 문의</h4>
+                  <p>업무 담당자: 02-1234-5678</p>
+                  <p>이메일: support@company.com</p>
+                  <p>운영시간: 평일 09:00 ~ 18:00</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </main>
   )
 }

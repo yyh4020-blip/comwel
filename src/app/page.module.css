@@ -1,161 +1,5 @@
 /* app/page.module.css */
 
-/* .main {
-    min-height: 100vh;
-    padding: 2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.title {
-    text-align: center;
-    font-size: 3rem;
-    color: white;
-    margin-bottom: 3rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.iconGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 1rem;
-    margin-bottom: 3rem;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.iconButton {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    background: white;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    min-height: 100px;
-}
-
-.iconButton:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-}
-
-.iconButton.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    transform: scale(1.05);
-}
-
-.iconEmoji {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    display: block;
-}
-
-.iconName {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: inherit;
-}
-
-.imageContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 2rem;
-}
-
-.imageWrapper {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    max-width: 800px;
-    width: 100%;
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.displayImage {
-    width: 100%;
-    height: auto;
-    max-height: 500px;
-    object-fit: cover;
-    display: block;
-}
-
-.imageInfo {
-    padding: 1.5rem;
-    text-align: center;
-}
-
-.imageInfo h2 {
-    font-size: 1.8rem;
-    color: #333;
-    margin-bottom: 0.5rem;
-}
-
-.imageInfo p {
-    color: #666;
-    font-size: 1.1rem;
-}
-
-반응형 디자인
-@media (max-width: 768px) {
-    .title {
-        font-size: 2rem;
-    }
-
-    .iconGrid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 0.5rem;
-    }
-
-    .iconButton {
-        padding: 0.75rem;
-        min-height: 80px;
-    }
-
-    .iconEmoji {
-        font-size: 2rem;
-    }
-
-    .iconName {
-        font-size: 0.75rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .main {
-        padding: 1rem;
-    }
-
-    .iconGrid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-} */
-
-
 .main {
     min-height: 100vh;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -280,7 +124,7 @@
     line-height: 1.2;
 }
 
-/* 상세 안내 섹션 */
+/* 상세 안내 섹션 (모달 도입 이후에도 스타일은 유지) */
 .detailSection {
     background: white;
     border-radius: 16px;
@@ -311,12 +155,6 @@
     font-weight: 700;
 }
 
-.detailDescription {
-    color: #7f8c8d;
-    font-size: 1.1rem;
-    line-height: 1.6;
-}
-
 /* 이미지 컨테이너 */
 .imageContainer {
     margin-top: 2rem;
@@ -328,24 +166,7 @@
     gap: 2rem;
 }
 
-/* .imagePlaceholder {
-    background: #f8f9fa;
-    border-radius: 12px;
-    overflow: hidden;
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #e9ecef;
-} */
-
-.guideImage {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    max-height: 900px;
-}
-
+/* 캐러셀에서 버튼 위치 기준을 잡기 위해 relative 필수 */
 .imagePlaceholder {
     background: #f8f9fa;
     border-radius: 12px;
@@ -356,38 +177,14 @@
     justify-content: center;
     border: 2px solid #e9ecef;
     position: relative;
-    /* 버튼 위치 기준 */
+    /* ← 버튼 기준 */
 }
 
-.navBtn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 0;
-    background: rgba(0, 0, 0, 0.35);
-    color: #fff;
-    font-size: 2rem;
-    line-height: 1;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: grid;
-    place-items: center;
-    transition: opacity 0.2s ease;
-    z-index: 2;
-}
-
-.navBtn:hover {
-    background: rgba(0, 0, 0, 0.5);
-}
-
-.prev {
-    left: 10px;
-}
-
-.next {
-    right: 10px;
+.guideImage {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 900px;
 }
 
 /* 추가 정보 카드 */
@@ -435,6 +232,119 @@
     color: #555;
     line-height: 1.8;
     margin: 0.3rem 0;
+}
+
+/* === Carousel === */
+.carousel {
+    gap: 0.75rem;
+    outline: none;
+}
+
+.navBtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: opacity 0.2s ease, background 0.2s ease;
+    z-index: 2;
+    /* 이미지 위로 */
+}
+
+.navBtn:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border: 0;
+    border-radius: 50%;
+    background: #cfd8dc;
+    cursor: pointer;
+}
+
+.activeDot {
+    background: #546e7a;
+}
+
+/* ===== Modal ===== */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    z-index: 1000;
+}
+
+.modal {
+    width: min(1024px, 96vw);
+    max-height: 90vh;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* 🔧 2열 → 3열로 변경: 배지 | 제목 | 닫기 */
+.modalHeader {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 3px solid transparent;
+}
+
+/* 제목 중앙 정렬 고정 */
+.detailTitle {
+    margin: 0;
+    text-align: center;
+    justify-self: center;
+}
+
+/* 닫기 버튼 우측 끝 고정 */
+.closeBtn {
+    border: 0;
+    background: transparent;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #555;
+    justify-self: end;
+}
+
+.modalBody {
+    padding: 1.25rem;
+    overflow: auto;
 }
 
 /* 반응형 디자인 */
@@ -485,10 +395,25 @@
 
     .detailTitle {
         font-size: 1.4rem;
+        word-break: keep-all;
+        overflow-wrap: anywhere;
+        /* 제목 길 때 줄바꿈 허용 */
     }
 
     .additionalInfo {
         grid-template-columns: 1fr;
+    }
+
+    .navBtn {
+        width: 38px;
+        height: 38px;
+        font-size: 1.6rem;
+    }
+
+    .modal {
+        width: 100%;
+        max-height: 92vh;
+        border-radius: 12px;
     }
 }
 
