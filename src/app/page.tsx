@@ -253,7 +253,7 @@ export default function Home() {
       <div className={styles.container}>
         {/* 헤더 */}
         <header className={styles.header}>
-          <h1 className={styles.title}>업무 안내 시스템</h1>
+          <h1 className={styles.title}>푸른 씨앗 업무 안내 시스템</h1>
           <p className={styles.subtitle}>원하시는 업무를 선택하시면 상세 안내를 확인하실 수 있습니다</p>
         </header>
 
