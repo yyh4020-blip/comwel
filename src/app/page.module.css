@@ -470,3 +470,93 @@
 .additionalInfo {
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
+
+/* ===== Welcome (첫 접속 모달) ===== */
+.welcomeModal {
+    position: relative;
+    width: min(720px, 96vw);
+    max-height: 90vh;
+    background: transparent;
+    /* 카드만 보이도록 투명 */
+    border-radius: 16px;
+    padding: 0.75rem 0.75rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.welcomeCard {
+    position: relative;
+    width: 100%;
+    background: #fff7e8;
+    /* 은은한 베이지 톤 */
+    border: 1px solid #f0e0c8;
+    border-radius: 16px;
+    padding: 1.25rem 1.25rem 1.5rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.welcomeHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid #e9dcbc;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.quoteIcon {
+    font-size: 1.5rem;
+    color: #2e7d32;
+    /* 녹색 톤 */
+}
+
+.welcomeTitle {
+    font-weight: 800;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.welcomeBody p {
+    color: #3f3f3f;
+    line-height: 1.7;
+    margin: 0.5rem 0;
+    word-break: keep-all;
+}
+
+.cornerQuotes {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    display: flex;
+    gap: 6px;
+    color: rgba(0, 0, 0, 0.35);
+    font-size: 1.2rem;
+}
+
+/* 닫기 버튼 위치 살짝 보정 (오른쪽 상단 외곽) */
+.welcomeModal .closeBtn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 640px) {
+    .welcomeModal {
+        width: 96vw;
+    }
+
+    .welcomeCard {
+        padding: 1rem;
+    }
+
+    .welcomeTitle {
+        font-size: 1.1rem;
+    }
+}

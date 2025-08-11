@@ -185,8 +185,18 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<Category | '전체'>('전체')
   const [currentImage, setCurrentImage] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [showWelcome, setShowWelcome] = useState(false); // ✅ 인사말 모달
 
   const touchStartXRef = useRef<number | null>(null)
+
+  // 최초 접속 시 1회만 표시 (세션 기준)
+  useEffect(() => {
+    const key = 'welcome_shown_v1';
+    if (!sessionStorage.getItem(key)) {
+      setShowWelcome(true);
+      sessionStorage.setItem(key, '1');
+    }
+  }, []);
 
   // 선택 변경 시 인덱스 리셋
   useEffect(() => {
@@ -250,6 +260,39 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
+      {/* ✅ 인사말 모달 */}
+      {showWelcome && (
+        <div
+          className={styles.modalOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-label="인사말 안내"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowWelcome(false); }}
+        >
+          <div className={styles.welcomeModal}>
+            <button
+              className={styles.closeBtn}
+              aria-label="닫기"
+              onClick={() => setShowWelcome(false)}
+            >×</button>
+
+            <div className={styles.welcomeCard}>
+              <div className={styles.welcomeHeader}>
+                <span className={styles.quoteIcon}>❝</span>
+                <span className={styles.welcomeTitle}>인사말</span>
+                <span className={styles.quoteIcon}>❞</span>
+              </div>
+
+              <div className={styles.welcomeBody}>
+                <p>안녕하십니까. 근로복지공단 퇴직연금 담당자 <b>윤용현 전문관</b>입니다.</p>
+                <p>퇴직연금 관련 행정업무가 처음이신가요? 익숙하지 않은 용어와 복잡한 절차 때문에 막막하셨던 분들을 위해, 부담을 덜어드리고자 이 안내문을 정성껏 준비하였습니다.</p>
+                <p>하나하나 차근차근 따라오실 수 있도록, 그림과 실제 예시를 곁들여 <b>‘그림설명서’</b> 형식으로 친절하게 구성했습니다. 이 안내문이 여러분의 소중한 시간을 절약하고, 보다 편안하게 업무를 마치시는 데 작은 도움이 되기를 바랍니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.container}>
         {/* 헤더 */}
         <header className={styles.header}>
