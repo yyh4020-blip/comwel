@@ -1,0 +1,519 @@
+/* app/page.module.css */
+
+/* .main {
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.title {
+    text-align: center;
+    font-size: 3rem;
+    color: white;
+    margin-bottom: 3rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.iconGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.iconButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-height: 100px;
+}
+
+.iconButton:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.iconButton.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.05);
+}
+
+.iconEmoji {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.iconName {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: inherit;
+}
+
+.imageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.imageWrapper {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    width: 100%;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.displayImage {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+    display: block;
+}
+
+.imageInfo {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.imageInfo h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.imageInfo p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+반응형 디자인
+@media (max-width: 768px) {
+    .title {
+        font-size: 2rem;
+    }
+
+    .iconGrid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.5rem;
+    }
+
+    .iconButton {
+        padding: 0.75rem;
+        min-height: 80px;
+    }
+
+    .iconEmoji {
+        font-size: 2rem;
+    }
+
+    .iconName {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main {
+        padding: 1rem;
+    }
+
+    .iconGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+} */
+
+
+.main {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 2rem 1rem;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* 헤더 */
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* 카테고리 필터 */
+.categoryFilter {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.categoryBtn {
+    padding: 0.5rem 1.5rem;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    background: white;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.categoryBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.categoryBtn.active {
+    color: white;
+    border-color: transparent;
+}
+
+/* 업무 카드 그리드 */
+.workGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.workCard {
+    background: white;
+    border: 3px solid transparent;
+    border-radius: 12px;
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    position: relative;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.workCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.workCard.selected {
+    border-width: 3px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+}
+
+.categoryTag {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.workIcon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.workTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.3rem;
+}
+
+.workFullTitle {
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    line-height: 1.2;
+}
+
+/* 상세 안내 섹션 */
+.detailSection {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.detailHeader {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+.detailCategory {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.detailTitle {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin: 1rem 0;
+    font-weight: 700;
+}
+
+.detailDescription {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* 이미지 컨테이너 */
+.imageContainer {
+    margin-top: 2rem;
+}
+
+.imageWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* .imagePlaceholder {
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e9ecef;
+} */
+
+.guideImage {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 900px;
+}
+
+.imagePlaceholder {
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e9ecef;
+    position: relative;
+    /* 버튼 위치 기준 */
+}
+
+.navBtn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: opacity 0.2s ease;
+    z-index: 2;
+}
+
+.navBtn:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+/* 추가 정보 카드 */
+.additionalInfo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.infoCard {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid #3498db;
+}
+
+.infoCard h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.infoCard ul {
+    list-style: none;
+    padding: 0;
+}
+
+.infoCard ul li {
+    padding: 0.5rem 0;
+    color: #555;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.infoCard ul li:before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #3498db;
+    font-weight: bold;
+}
+
+.infoCard p {
+    color: #555;
+    line-height: 1.8;
+    margin: 0.3rem 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1024px) {
+    .workGrid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .main {
+        padding: 1rem 0.5rem;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+    }
+
+    .workGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+
+    .workCard {
+        min-height: 120px;
+        padding: 1rem;
+    }
+
+    .workIcon {
+        font-size: 1.5rem;
+    }
+
+    .workTitle {
+        font-size: 0.9rem;
+    }
+
+    .workFullTitle {
+        font-size: 0.7rem;
+    }
+
+    .detailSection {
+        padding: 1.5rem;
+    }
+
+    .detailTitle {
+        font-size: 1.4rem;
+    }
+
+    .additionalInfo {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .categoryFilter {
+        gap: 0.3rem;
+    }
+
+    .categoryBtn {
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .workGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .workCard {
+        min-height: 100px;
+        padding: 0.8rem;
+    }
+
+    .categoryTag {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+    }
+}

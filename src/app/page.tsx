@@ -1,103 +1,407 @@
-import Image from "next/image";
+'use client'
+
+import { useEffect, useMemo, useRef, useState } from 'react'
+import Image from 'next/image'
+import styles from './page.module.css'
+
+type Category = '신청하기' | '직원관리' | '부담금' | '재정지원' | '기타'
+
+interface WorkItem {
+  id: number
+  title: string
+  category: Category
+  icon: string
+  imagePaths: string[]     // ✅ 변경: 다중 이미지 지원
+  description: string
+  shortDesc: string
+}
+
+const workData: WorkItem[] = [
+  {
+    id: 1,
+    title: '기금제도 푸른씨앗 신청하기',
+    category: '신청하기',
+    icon: '🌱',
+    imagePaths: ['/images/008.jpg', '/images/009.jpg', '/images/010.jpg', '/images/011.jpg'],
+    description: '푸른씨앗 기금제도 신청 절차 및 필요 서류 안내',
+    shortDesc: '푸른씨앗 신청'
+  },
+  {
+    id: 2,
+    title: '신규직원 등록하기',
+    category: '직원관리',
+    icon: '👤',
+    imagePaths: ['/images/013.jpg', '/images/014.jpg', '/images/015.jpg', '/images/016.jpg',],
+    description: '신규 직원 등록 절차 및 필수 입력 정보 안내',
+    shortDesc: '직원 등록'
+  },
+  {
+    id: 3,
+    title: '급여변경하기',
+    category: '직원관리',
+    icon: '💰',
+    imagePaths: ['/images/017.jpg',],
+    description: '직원 급여 변경 신청 및 처리 절차 안내',
+    shortDesc: '급여 변경'
+  },
+  {
+    id: 4,
+    title: '퇴사 - 지급신청',
+    category: '직원관리',
+    icon: '📋',
+    imagePaths: ['/images/026.jpg', '/images/027.jpg',],
+    description: '퇴직금 지급 신청 절차 및 필요 서류 안내',
+    shortDesc: '퇴사 지급신청'
+  },
+  {
+    id: 5,
+    title: '퇴사 - 지급신청현황',
+    category: '직원관리',
+    icon: '📊',
+    imagePaths: ['/images/035.jpg', '/images/036.jpg'],
+    description: '퇴직금 지급 신청 현황 조회 방법',
+    shortDesc: '지급신청현황'
+  },
+  {
+    id: 6,
+    title: '사용자 납입 희망 금액 수시납부 처리하기',
+    category: '부담금',
+    icon: '💳',
+    imagePaths: ['/images/018.jpg', '/images/019.jpg',],
+    description: '수시 납부 신청 및 처리 방법 안내',
+    shortDesc: '수시 납부'
+  },
+  {
+    id: 7,
+    title: '(과거분) 일시전환부담금 납입신청',
+    category: '부담금',
+    icon: '📅',
+    imagePaths: ['/images/023.jpg', '/images/024.jpg',],
+    description: '과거분 일시전환부담금 납입 신청 절차',
+    shortDesc: '과거분 납입'
+  },
+  {
+    id: 8,
+    title: '(해당기간 ~ 연 1회) 부담금 정산신청하기',
+    category: '부담금',
+    icon: '📊',
+    imagePaths: ['/images/020.jpg', '/images/021.jpg', '/images/022.jpg',],
+    description: '연간 부담금 정산 신청 절차 및 기한 안내',
+    shortDesc: '정산 신청'
+  },
+  {
+    id: 9,
+    title: '자동이체관리',
+    category: '부담금',
+    icon: '🔄',
+    imagePaths: ['/images/025.jpg'],
+    description: '자동이체 등록, 변경, 해지 방법 안내',
+    shortDesc: '자동이체'
+  },
+  {
+    id: 10,
+    title: '기타사항 변경 (근로자 정보, 퇴직급여 담당자 변경)',
+    category: '기타',
+    icon: '✏️',
+    imagePaths: ['/images/010.jpg'],
+    description: '근로자 정보, 퇴직급여 담당자 변경 절차',
+    shortDesc: '정보 변경'
+  },
+  {
+    id: 11,
+    title: '온라인 신청 현황',
+    category: '기타',
+    icon: '🖥️',
+    imagePaths: ['/images/029.jpg'],
+    description: '온라인으로 신청한 업무 처리 현황 조회',
+    shortDesc: '신청 현황'
+  },
+  {
+    id: 12,
+    title: '부담금 납입 안내 (명세서)',
+    category: '부담금',
+    icon: '📄',
+    imagePaths: ['/images/012.jpg'],
+    description: '부담금 납입 명세서 조회 및 출력 방법',
+    shortDesc: '납입 명세서'
+  },
+  {
+    id: 13,
+    title: '부담금 납입 내역 (기존 납입 내역)',
+    category: '부담금',
+    icon: '📑',
+    imagePaths: ['/images/013.jpg'],
+    description: '기존 부담금 납입 내역 조회 방법',
+    shortDesc: '납입 내역'
+  },
+  {
+    id: 14,
+    title: '재정지원금 - 지원금 신청결과',
+    category: '재정지원',
+    icon: '✅',
+    imagePaths: ['/images/033.jpg'],
+    description: '재정지원금 신청 결과 확인 방법',
+    shortDesc: '신청 결과'
+  },
+  {
+    id: 15,
+    title: '재정지원금 - 지원금 지급내역',
+    category: '재정지원',
+    icon: '💵',
+    imagePaths: ['/images/034.jpg'],
+    description: '재정지원금 지급 내역 조회 방법',
+    shortDesc: '지급 내역'
+  },
+  {
+    id: 16,
+    title: '증명서 발급',
+    category: '기타',
+    icon: '📜',
+    imagePaths: ['/images/038.jpg'],
+    description: '각종 증명서 발급 신청 및 출력 방법',
+    shortDesc: '증명서 발급'
+  },
+  {
+    id: 17,
+    title: '서식 자료실',
+    category: '기타',
+    icon: '📁',
+    imagePaths: ['/images/007.jpg'],
+    description: '업무별 필요 서식 다운로드 및 작성 방법',
+    shortDesc: '서식 자료실'
+  }
+]
+
+const categoryColors: Record<Category, string> = {
+  '신청하기': '#4CAF50',
+  '직원관리': '#2196F3',
+  '부담금': '#FF9800',
+  '재정지원': '#9C27B0',
+  '기타': '#607D8B'
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [selectedWork, setSelectedWork] = useState<WorkItem>(workData[0])
+  const [selectedCategory, setSelectedCategory] = useState<Category | '전체'>('전체')
+  const [currentImage, setCurrentImage] = useState(0)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const touchStartXRef = useRef<number | null>(null)
+
+  // Work 변경 시 인덱스 리셋 (안전망)
+  useEffect(() => {
+    setCurrentImage(0)
+  }, [selectedWork])
+
+  const filteredWorks = useMemo(
+    () => selectedCategory === '전체'
+      ? workData
+      : workData.filter(w => w.category === selectedCategory),
+    [selectedCategory]
+  )
+
+  const categories: (Category | '전체')[] = ['전체', '신청하기', '직원관리', '부담금', '재정지원', '기타']
+
+  // 캐러셀 정보
+  const total = selectedWork.imagePaths.length
+  const hasMultiple = total > 1
+  const clampedIndex = total ? Math.min(currentImage, total - 1) : 0
+  const currentSrc = total ? selectedWork.imagePaths[clampedIndex] : null
+
+  const goPrev = () => {
+    if (!total) return
+    setCurrentImage(i => (i - 1 + total) % total)
+  }
+  const goNext = () => {
+    if (!total) return
+    setCurrentImage(i => (i + 1) % total)
+  }
+  const goTo = (idx: number) => {
+    if (!total) return
+    setCurrentImage(Math.max(0, Math.min(idx, total - 1)))
+  }
+
+  const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (!hasMultiple) return
+    if (e.key === 'ArrowLeft') goPrev()
+    if (e.key === 'ArrowRight') goNext()
+  }
+
+  const onTouchStart: React.TouchEventHandler<HTMLDivElement> = (e) => {
+    touchStartXRef.current = e.touches[0].clientX
+  }
+  const onTouchEnd: React.TouchEventHandler<HTMLDivElement> = (e) => {
+    if (!hasMultiple || touchStartXRef.current === null) return
+    const delta = e.changedTouches[0].clientX - touchStartXRef.current
+    if (Math.abs(delta) > 40) {
+      delta > 0 ? goPrev() : goNext()
+    }
+    touchStartXRef.current = null
+  }
+
+  return (
+    <main className={styles.main}>
+      <div className={styles.container}>
+        {/* 헤더 */}
+        <header className={styles.header}>
+          <h1 className={styles.title}>업무 안내 시스템</h1>
+          <p className={styles.subtitle}>원하시는 업무를 선택하시면 상세 안내를 확인하실 수 있습니다</p>
+        </header>
+
+        {/* 카테고리 필터 */}
+        <div className={styles.categoryFilter}>
+          {categories.map((category) => (
+            <button
+              key={category}
+              className={`${styles.categoryBtn} ${selectedCategory === category ? styles.active : ''}`}
+              onClick={() => setSelectedCategory(category)}
+              style={{
+                backgroundColor: selectedCategory === category
+                  ? (category === '전체' ? '#333' : categoryColors[category as Category])
+                  : 'transparent'
+              }}
+            >
+              {category}
+            </button>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+
+        {/* 업무 카드 그리드 */}
+        <div className={styles.workGrid}>
+          {filteredWorks.map((work) => (
+            <button
+              key={work.id}
+              className={`${styles.workCard} ${selectedWork.id === work.id ? styles.selected : ''}`}
+              onClick={() => {
+                setSelectedWork(work)
+                setCurrentImage(0) // 전환 시 즉시 리셋
+              }}
+              style={{ borderColor: selectedWork.id === work.id ? categoryColors[work.category] : 'transparent' }}
+            >
+              <div className={styles.categoryTag} style={{ backgroundColor: categoryColors[work.category] }}>
+                {work.category}
+              </div>
+              <span className={styles.workIcon}>{work.icon}</span>
+              <h3 className={styles.workTitle}>{work.shortDesc}</h3>
+              <p className={styles.workFullTitle}>{work.title}</p>
+            </button>
+          ))}
+        </div>
+
+        {/* 선택된 업무 상세 */}
+        <div className={styles.detailSection}>
+          <div className={styles.detailHeader}>
+            <span
+              className={styles.detailCategory}
+              style={{ backgroundColor: categoryColors[selectedWork.category] }}
+            >
+              {selectedWork.category}
+            </span>
+            <h2 className={styles.detailTitle}>{selectedWork.title}</h2>
+            <p className={styles.detailDescription}>{selectedWork.description}</p>
+          </div>
+
+          {/* 이미지 캐러셀 */}
+          <div className={styles.imageContainer}>
+            <div
+              className={`${styles.imageWrapper} ${styles.carousel}`}
+              tabIndex={0}
+              onKeyDown={onKeyDown}
+              onTouchStart={onTouchStart}
+              onTouchEnd={onTouchEnd}
+              aria-roledescription="carousel"
+              aria-label={`${selectedWork.title} 이미지 갤러리`}
+            >
+              <div className={styles.imagePlaceholder}>
+                {currentSrc ? (
+                  <Image
+                    key={currentSrc}
+                    src={currentSrc}
+                    alt={`${selectedWork.title} 안내 이미지 ${clampedIndex + 1}/${total}`}
+                    width={900}
+                    height={600}
+                    className={styles.guideImage}
+                    priority
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                      const parent = target.parentElement
+                      if (parent) {
+                        parent.innerHTML = `
+                          <div style="
+                            display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;
+                            background:#f5f5f5;color:#666;padding:2rem;text-align:center
+                          ">
+                            <div style="font-size:3rem;margin-bottom:1rem;">${selectedWork.icon}</div>
+                            <h3 style="margin-bottom:1rem;">${selectedWork.title}</h3>
+                            <p style="color:#999;">이미지 파일 위치: ${selectedWork.imagePaths.join(', ')}</p>
+                            <p style="color:#999;font-size:0.9rem;margin-top:0.5rem;">public 폴더에 해당 이미지를 추가해주세요</p>
+                          </div>
+                        `
+                      }
+                    }}
+                  />
+                ) : (
+                  <div style={{ padding: '2rem', color: '#999', textAlign: 'center' }}>
+                    이미지가 없습니다
+                  </div>
+                )}
+
+                {hasMultiple && (
+                  <>
+                    <button
+                      className={`${styles.navBtn} ${styles.prev}`}
+                      onClick={goPrev}
+                      aria-label="이전 이미지"
+                    >
+                      ‹
+                    </button>
+                    <button
+                      className={`${styles.navBtn} ${styles.next}`}
+                      onClick={goNext}
+                      aria-label="다음 이미지"
+                    >
+                      ›
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {hasMultiple && (
+                <div className={styles.dots} role="tablist" aria-label="이미지 선택">
+                  {selectedWork.imagePaths.map((_, idx) => (
+                    <button
+                      key={idx}
+                      role="tab"
+                      aria-selected={currentImage === idx}
+                      aria-label={`${idx + 1}번째 이미지 보기`}
+                      className={`${styles.dot} ${currentImage === idx ? styles.activeDot : ''}`}
+                      onClick={() => goTo(idx)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 추가 정보 */}
+            <div className={styles.additionalInfo}>
+              <div className={styles.infoCard}>
+                <h4>📌 주의사항</h4>
+                <ul>
+                  <li>모든 신청은 영업일 기준으로 처리됩니다</li>
+                  <li>필수 서류를 반드시 준비해주세요</li>
+                  <li>문의사항은 담당자에게 연락바랍니다</li>
+                </ul>
+              </div>
+              <div className={styles.infoCard}>
+                <h4>📞 문의</h4>
+                <p>업무 담당자: 02-1234-5678</p>
+                <p>이메일: support@company.com</p>
+                <p>운영시간: 평일 09:00 ~ 18:00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
 }
