@@ -215,10 +215,6 @@ export default function Home() {
     if (!total) return
     setCurrentImage(i => (i + 1) % total)
   }
-  const goTo = (idx: number) => {
-    if (!total) return
-    setCurrentImage(Math.max(0, Math.min(idx, total - 1)))
-  }
 
   const onKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
     if (!hasMultiple) return
@@ -365,21 +361,6 @@ export default function Home() {
                   </>
                 )}
               </div>
-
-              {hasMultiple && (
-                <div className={styles.dots} role="tablist" aria-label="이미지 선택">
-                  {selectedWork.imagePaths.map((_, idx) => (
-                    <button
-                      key={idx}
-                      role="tab"
-                      aria-selected={currentImage === idx}
-                      aria-label={`${idx + 1}번째 이미지 보기`}
-                      className={`${styles.dot} ${currentImage === idx ? styles.activeDot : ''}`}
-                      onClick={() => goTo(idx)}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* 추가 정보 */}
