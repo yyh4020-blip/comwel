@@ -442,3 +442,31 @@
         padding: 0.15rem 0.4rem;
     }
 }
+
+/* 명함 이미지를 칼럼 안에서 반응형으로 */
+.businessCardImg {
+    width: 100%;
+    /* ✅ 칼럼 너비에 맞춤 */
+    height: auto;
+    /* 비율 유지 */
+    max-width: 480px;
+    /* 너무 커지지 않게 상한 */
+    display: block;
+    margin: 0 auto;
+    /* 가운데 정렬 */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 모달 본문에서 가로 스크롤 방지 */
+.modalBody {
+    padding: 1.25rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* ✅ 가로 스크롤 제거 */
+}
+
+/* 칼럼이 너무 좁아지지 않게 최소폭 살짝 키움(선택) */
+.additionalInfo {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}

@@ -395,20 +395,34 @@ export default function Home() {
 
               <div className={styles.additionalInfo}>
                 <div className={styles.infoCard}>
-                  <h4>📌 주의사항</h4>
-                  <ul>
-                    <li>모든 신청은 영업일 기준으로 처리됩니다</li>
-                    <li>필수 서류를 반드시 준비해주세요</li>
-                    <li>문의사항은 담당자에게 연락바랍니다</li>
-                  </ul>
+                  <h4>ℹ️ 안내</h4>
+                  <p>
+                    안녕하세요. 근로복지공단 퇴직연금 담당자 윤용현 전문관입니다.
+                  </p>
+                  <p>
+                    행정 업무가 낯설고 힘드시죠?
+                  </p>
+                  <p>
+                    퇴직연금 업무가 처음이신 분들을 위해
+                    복잡한 절차와 용어를 쉽게 풀어냈습니다.
+                  </p>
+                  <p>
+                    업무 편하게 끝내고, 칼퇴하세요!
+                    <span style={{ fontSize: '2rem', color: 'red', verticalAlign: 'middle' }}>♥️</span>
+                  </p>
                 </div>
                 <div className={styles.infoCard}>
                   <h4>📞 문의</h4>
-                  <p>업무 담당자: 02-1234-5678</p>
-                  <p>이메일: support@company.com</p>
-                  <p>운영시간: 평일 09:00 ~ 18:00</p>
+                  <Image
+                    src="/business_card.png"
+                    alt="업무 담당자 명함"
+                    width={500}
+                    height={250}
+                    className={styles.businessCardImg}
+                  />
                 </div>
               </div>
+
             </div>
           </div>
         </div>
