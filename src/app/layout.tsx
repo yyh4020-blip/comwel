@@ -41,8 +41,18 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: '이미지 갤러리',
-  description: '아이콘을 클릭하여 이미지를 확인하세요',
+  title: '근로복지공단 푸른씨앗 업무 안내 시스템',
+  description: '푸른씨앗 온라인 업무 안내 도우미입니다.',
+
+  openGraph: {
+    title: '근로복지공단 푸른씨앗 업무 안내 시스템',
+    description: '푸른씨앗 온라인 업무 안내 도우미입니다.',
+    url: 'https://comwel.vercel.app',
+    siteName: '근로복지공단 푸른씨앗',
+    images: [{ url: '000.jpg', width: 1200, height: 630, alt: '푸른씨앗 미리보기 이미지'}],
+    type: 'website',
+    locale: 'ko_KR',
+  },
 }
 
 export default function RootLayout({
