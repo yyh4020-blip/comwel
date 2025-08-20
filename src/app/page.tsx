@@ -23,7 +23,7 @@ const workData: WorkItem[] = [
     category: '신청하기',
     icon: '🌱',
     imagePaths: ['/images/004.jpg', '/images/005.jpg', '/images/006.jpg', '/images/007.jpg', '/images/008.jpg', '/images/009.jpg', '/images/010.jpg', '/images/011.jpg'],
-    description: '푸른씨앗 기금제도 신청 절차 및 필요 서류 안내',
+    description: '푸른씨앗 기금제도 신청 절차 및 필요 서류 안내\n(메뉴 위치 : 홈페이지 > 신청하기 > 가입 > 기금제도 신청하기(사업장))',
     shortDesc: '푸른씨앗 신청'
   },
   {
