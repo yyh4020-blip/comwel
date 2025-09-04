@@ -13,6 +13,7 @@ interface WorkItem {
   icon: string
   imagePaths: string[]
   description: string
+  menuPath : string
   shortDesc: string
 }
 
@@ -23,7 +24,8 @@ const workData: WorkItem[] = [
     category: '신청하기',
     icon: '🌱',
     imagePaths: ['/images/004.jpg', '/images/005.jpg', '/images/006.jpg', '/images/007.jpg', '/images/008.jpg', '/images/009.jpg', '/images/010.jpg', '/images/011.jpg'],
-    description: '푸른씨앗 기금제도 신청 절차 및 필요 서류 안내\n(메뉴 위치 : 홈페이지 > 신청하기 > 가입 > 기금제도 신청하기(사업장))',
+    description: '푸른씨앗 기금제도 가입을 위한 절차 및 필요 서류 안내',
+    menuPath: '홈페이지 > 신청하기 > 가입 > 기금제도 신청하기(사업장)',
     shortDesc: '푸른씨앗 신청'
   },
   {
@@ -33,6 +35,7 @@ const workData: WorkItem[] = [
     icon: '👤',
     imagePaths: ['/images/013.jpg', '/images/014.jpg', '/images/015.jpg', '/images/016.jpg'],
     description: '신규 직원 등록 절차 및 필수 입력 정보 안내',
+    menuPath: '홈페이지 > 신청하기 > 가입자관리',
     shortDesc: '직원 등록'
   },
   {
@@ -42,6 +45,7 @@ const workData: WorkItem[] = [
     icon: '💰',
     imagePaths: ['/images/017.jpg'],
     description: '직원 급여 변경 신청 및 처리 절차 안내',
+    menuPath: '홈페이지 > 신청하기 > 부담금 > 가입자 연간(예상)임금총액변경',
     shortDesc: '급여 변경'
   },
   {
@@ -51,6 +55,7 @@ const workData: WorkItem[] = [
     icon: '📋',
     imagePaths: ['/images/026.jpg', '/images/027.jpg'],
     description: '퇴직금 지급 신청 절차 및 필요 서류 안내',
+    menuPath: '홈페이지 > 신청하기 > 지급 > 퇴직급여 지급신청',
     shortDesc: '퇴사 지급신청'
   },
   {
@@ -60,6 +65,7 @@ const workData: WorkItem[] = [
     icon: '📊',
     imagePaths: ['/images/035.jpg', '/images/036.jpg'],
     description: '퇴직금 지급 신청 현황 조회 방법',
+    menuPath: '홈페이지 > 조회하기 > 지급',
     shortDesc: '지급신청현황'
   },
   {
@@ -67,107 +73,129 @@ const workData: WorkItem[] = [
     title: '사용자 납입 희망 금액 수시납부 처리하기',
     category: '부담금',
     icon: '💳',
-    imagePaths: ['/images/018.jpg', '/images/019.jpg'],
+    imagePaths: ['/images/018.jpg'],
     description: '수시 납부 신청 및 처리 방법 안내',
+    menuPath: '홈페이지 > 신청하기 > 부담금 > 부담금 수시납입 > 수시납입신청',
     shortDesc: '수시 납부'
   },
   {
     id: 7,
+    title: '사용자 납입 희망 금액 변경하기',
+    category: '부담금',
+    icon: '💵',
+    imagePaths: ['/images/019.jpg'],
+    description: '정기부담금 납입 희망 금액 변경 안내',
+    menuPath: '홈페이지 > 신청하기 > 부담금 > 부담금 수시납입 > 정기부담금 납입희망금액 변경신청',
+    shortDesc: '납입희망금액 변경'
+  },
+  {
+    id: 8,
     title: '(과거분) 일시전환부담금 납입신청',
     category: '부담금',
     icon: '📅',
     imagePaths: ['/images/023.jpg', '/images/024.jpg'],
     description: '과거분 일시전환부담금 납입 신청 절차',
+    menuPath: '홈페이지 > 신청하기 > 부담금 > 일시전환부담금 납입신청',
     shortDesc: '과거분 납입'
   },
   {
-    id: 8,
+    id: 9,
     title: '(해당기간 ~ 연 1회) 부담금 정산신청하기',
     category: '부담금',
     icon: '📊',
     imagePaths: ['/images/020.jpg', '/images/021.jpg', '/images/022.jpg'],
     description: '연간 부담금 정산 신청 절차 및 기한 안내',
+    menuPath: '홈페이지 > 신청하기 > 부담금 > 부담금 정산신청',
     shortDesc: '정산 신청'
   },
   {
-    id: 9,
+    id: 10,
     title: '자동이체관리',
     category: '부담금',
     icon: '🔄',
     imagePaths: ['/images/025.jpg'],
     description: '자동이체 등록, 변경, 해지 방법 안내',
+    menuPath: '홈페이지 > 신청하기 > 부담금 > 자동이체관리',
     shortDesc: '자동이체'
   },
   {
-    id: 10,
+    id: 11,
     title: '기타사항 변경 (근로자 정보, 퇴직급여 담당자 변경)',
     category: '기타',
     icon: '✏️',
-    imagePaths: ['/images/010.jpg'],
-    description: '근로자 정보, 퇴직급여 담당자 변경 절차',
+    imagePaths: ['/images/007.jpg'],
+    description: '',
+    menuPath: '근로자 정보 변경 : 신청하기 > 가입자 관리\n퇴직급여 담당자 변경 : 신청하기 > 퇴직급여담당자 관리',
     shortDesc: '정보 변경'
   },
   {
-    id: 11,
+    id: 12,
     title: '온라인 신청 현황',
     category: '기타',
     icon: '🖥️',
     imagePaths: ['/images/029.jpg'],
     description: '온라인으로 신청한 업무 처리 현황 조회',
+    menuPath: '홈페이지 > 조회하기 > 가입 > 서류등록현황',
     shortDesc: '신청 현황'
   },
   {
-    id: 12,
+    id: 13,
     title: '부담금 납입 안내 (명세서)',
     category: '부담금',
     icon: '📄',
-    imagePaths: ['/images/012.jpg'],
+    imagePaths: ['/images/030.jpg'],
     description: '부담금 납입 명세서 조회 및 출력 방법',
+    menuPath: '홈페이지 > 조회하기 > 부담금 > 부담금납입 안내',
     shortDesc: '납입 명세서'
   },
   {
-    id: 13,
+    id: 14,
     title: '부담금 납입 내역 (기존 납입 내역)',
     category: '부담금',
     icon: '📑',
-    imagePaths: ['/images/013.jpg'],
+    imagePaths: ['/images/031.jpg'],
     description: '기존 부담금 납입 내역 조회 방법',
+    menuPath: '홈페이지 > 조회하기 > 부담금 > 부담금납입 내역',
     shortDesc: '납입 내역'
   },
   {
-    id: 14,
+    id: 15,
     title: '재정지원금 - 지원금 신청결과',
     category: '재정지원',
     icon: '✅',
     imagePaths: ['/images/033.jpg'],
     description: '재정지원금 신청 결과 확인 방법',
+    menuPath: '홈페이지 > 조회하기 > 부담금 > 재정지원금 신청결과',
     shortDesc: '신청 결과'
   },
   {
-    id: 15,
+    id: 16,
     title: '재정지원금 - 지원금 지급내역',
     category: '재정지원',
     icon: '💵',
     imagePaths: ['/images/034.jpg'],
     description: '재정지원금 지급 내역 조회 방법',
+    menuPath: '홈페이지 > 조회하기 > 부담금 > 재정지원금 지급내역',
     shortDesc: '지급 내역'
   },
   {
-    id: 16,
+    id: 17,
     title: '증명서 발급',
     category: '기타',
     icon: '📜',
     imagePaths: ['/images/038.jpg'],
     description: '각종 증명서 발급 신청 및 출력 방법',
+    menuPath: '홈페이지 > 조회하기 > 증명서발급',
     shortDesc: '증명서 발급'
   },
   {
-    id: 17,
+    id: 18,
     title: '서식 자료실',
     category: '기타',
     icon: '📁',
     imagePaths: ['/images/007.jpg'],
     description: '업무별 필요 서식 다운로드 및 작성 방법',
+    menuPath: '홈페이지 > 고객센터 > 서식자료실',
     shortDesc: '서식 자료실'
   }
 ]
@@ -365,6 +393,11 @@ export default function Home() {
 
             <div className={styles.modalBody}>
               <p className={styles.detailDescription}>{selectedWork.description}</p>
+              {selectedWork.menuPath && (
+                <div className={styles.menuPath}>
+                  {selectedWork.menuPath}
+                </div>
+              )}
 
               <div className={styles.imageContainer}>
                 <div
@@ -413,8 +446,8 @@ export default function Home() {
 
                     {hasMultiple && (
                       <>
-                        <button className={`${styles.navBtn} ${styles.prev}`} onClick={goPrev} aria-label="이전 이미지">‹</button>
-                        <button className={`${styles.navBtn} ${styles.next}`} onClick={goNext} aria-label="다음 이미지">›</button>
+                        <button className={`${styles.navBtn} ${styles.prev}`} onClick={goPrev} aria-label="이전 이미지">◀</button>
+                        <button className={`${styles.navBtn} ${styles.next}`} onClick={goNext} aria-label="다음 이미지">▶</button>
                       </>
                     )}
                   </div>

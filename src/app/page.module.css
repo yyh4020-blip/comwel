@@ -155,6 +155,23 @@
     font-weight: 700;
 }
 
+.detailDescription {
+  line-height: 1.5;
+  white-space: pre-line;  /* \n 줄바꿈 적용 */
+}
+
+/* 홈페이지 메뉴 경로 스타일 */
+.menuPath {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #f1f8ff;          /* 은은한 파란 배경 */
+  border-left: 4px solid #2196F3;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.95rem;
+}
+
 /* 이미지 컨테이너 */
 .imageContainer {
     margin-top: 2rem;
@@ -245,7 +262,7 @@
     top: 50%;
     transform: translateY(-50%);
     border: 0;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.4);
     color: #fff;
     font-size: 2rem;
     line-height: 1;
@@ -253,8 +270,9 @@
     height: 44px;
     border-radius: 50%;
     cursor: pointer;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: opacity 0.2s ease, background 0.2s ease;
     z-index: 2;
     /* 이미지 위로 */
@@ -405,9 +423,9 @@
     }
 
     .navBtn {
-        width: 38px;
-        height: 38px;
-        font-size: 1.6rem;
+        width: 44px;
+        height: 44px;
+        font-size: 2rem;
     }
 
     .modal {
