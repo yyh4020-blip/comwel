@@ -17,6 +17,14 @@ interface WorkItem {
   shortDesc: string
 }
 
+// 음성인식 타입 선언
+declare global {
+  interface Window {
+    webkitSpeechRecognition? : any
+    SpeechRecognition? : any
+  }
+}
+
 const workData: WorkItem[] = [
   {
     id: 1,
@@ -215,6 +223,14 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showWelcome, setShowWelcome] = useState(false); // ✅ 인사말 모달
 
+  // 음성인식 모달
+  const [isVoiceOpen, setIsVoiceOpen] = useState(false)
+  const [supported, setSupported] = useState(false)
+  const [listening, setListening] = useState(false)
+  const [interim, setInterim] = useState('')
+  const [finals, setFinals] = useState<string[]>([])
+  const recRef = useRef<any>(null)
+
   const touchStartXRef = useRef<number | null>(null)
 
   // 최초 접속 시 1회만 표시 (세션 기준)
@@ -234,11 +250,14 @@ export default function Home() {
   // Esc로 모달 닫기
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsModalOpen(false)
+      if (e.key === 'Escape') {
+        setIsModalOpen(false)
+        if (isVoiceOpen) {setIsVoiceOpen (false); stopListening() }
     }
-    if (isModalOpen) window.addEventListener('keydown', onKey)
+  };
+    if (isModalOpen || isVoiceOpen) window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [isModalOpen])
+  }, [isModalOpen, isVoiceOpen])
 
   const filteredWorks = useMemo(
     () => selectedCategory === '전체'
@@ -286,6 +305,60 @@ export default function Home() {
     touchStartXRef.current = null
   }
 
+  // 음성인식 준비
+  useEffect(() => {
+     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+     setSupported(!!SR)
+     if (SR) {
+      const rec = new SR()
+      rec.lang = 'ko-KR'
+      rec.interimResults = true
+      rec.continuous = true
+
+      rec.onresult = (e: any) => {
+        let interimTxt = ''
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const t = (e.results[i][0]?.transcript || '').trim()
+          if (e.results[i].isFinal) {
+            setFinals(prev => [...prev, t])
+            setInterim('')
+
+            // 최종 문장 처리 이벤트 (여기에 의도 분류 연결하면 됨)
+            console.log('[인식된 음성] : ', t)
+          } else {
+            interimTxt = t
+          }
+        }
+        if (interimTxt) setInterim(interimTxt)
+      }
+
+      rec.onend = () => setListening(false)
+      rec.onerror = () => setListening(false)
+
+      recRef.current = rec
+     }
+
+     return () => {
+      try { recRef.current?.stop?.() } catch {}
+     }
+  }, [])
+
+  const startListening = () => {
+    if (!recRef.current) return
+    try {
+      recRef.current.start()
+      setListening(true)
+      setInterim('')
+      setFinals([])
+    } catch (e) {
+      console.warn(e)
+    }
+  }
+
+  const stopListening = () => {
+    try { recRef.current?.stop?.() } catch {}
+  }
+
   return (
     <main className={styles.main}>
       {/* ✅ 인사말 모달 */}
@@ -327,6 +400,17 @@ export default function Home() {
           <h1 className={styles.title}>푸른 씨앗 업무 안내 시스템</h1>
           <p className={styles.subtitle}>원하시는 업무를 선택하시면 상세 안내를 확인하실 수 있습니다</p>
         </header>
+
+        {/* 음성으로 찾기 버튼 */}
+        <div style={{display: "flex", justifyContent: "center", marginBottom: "1rem"}}>
+          <button
+            className={styles.voiceBtn ?? `${styles.categoryBtn} ${styles.active}`}
+            onClick={() => setIsVoiceOpen(true)}
+            aria-haspopup="dialog"
+            title="음성으로 원하는 업무 찾기">
+              음성으로 업무 찾기
+            </button>
+        </div>
 
         {/* 카테고리 필터 */}
         <div className={styles.categoryFilter}>
@@ -499,6 +583,69 @@ export default function Home() {
                 </div>
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 음성인식 모달 */}
+      {isVoiceOpen && (
+        <div
+          className={styles.modalOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-label="음성으로 원하는 업무 찾기"
+          onClick={(e) => { if (e.target === e.currentTarget) {setIsVoiceOpen(false); stopListening() } }}
+        >
+          <div className={styles.modal} style={{ maxWidth: 640 }}>
+            <header className={styles.modalHeader} style={{ borderColor: '#333' }}>
+              <h2 className={styles.detailTitle}>음성으로 원하는 업무 찾기</h2>
+              <button
+                className={styles.closeBtn}
+                aria-label="닫기"
+                onClick={() => {setIsVoiceOpen(false); stopListening() }}
+              >
+                ×
+              </button>
+            </header>
+
+            <div className={styles.modalBody}>
+              {!supported ? (
+                <div className={styles.infoCard}>
+                  <h4>브라우저에서 음성 인식을 지원하지 않아요</h4>
+                  <p className="text-sm">크롬/엣지 등 최신 브라우저를 사용해 주세요</p>
+                </div>
+              ) : (
+                <>
+                <div className={styles.infoCard}>
+                  <p className="text-sm">
+                    이렇게 말해보세요! "신규 직원 등록하고 싶어요", "푸른씨앗 가입하려면?", "이번달 돈이 안 나갔어요"
+                  </p>
+                </div>
+
+                {/* 음성 인식 토글 버튼 (중앙 큰 원형) */}
+                <div className={styles.voiceCenter}>
+                  <button
+                    onClick={listening ? stopListening : startListening}
+                    className={`${styles.voiceCircleBtn} ${listening ? styles.listening: styles.idle}`}
+                    style={{ marginBottom: '1rem'}}
+                  >
+                    {listening ? "🛑" : "🎙️"}
+                  </button>
+
+                  {/* 인식된 텍스트 화면에 나타내기 */}
+                  <div style={{ textAlign: "center", fontSize: "1.1rem", minHeight: 24, color: "#333" }}>
+                    {interim || finals.slice(-1)[0] || "대기 중..."}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs" style={{color: '#888'}}>
+                    * 일부 브라우저/기기에서는 마이크 버튼을 눌러야만 인식이 시작됩니다.
+                  </p>
+                </div>
+                </>
+              )}
             </div>
           </div>
         </div>
