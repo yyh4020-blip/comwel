@@ -1,24 +1,16 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image'
 import styles from './page.module.css'
 
-type Category = '신청하기' | '직원관리' | '부담금' | '재정지원' | '기타'
+// 업무 데이터 타입 선언
+import { workData, WorkItem, Category } from '@/data/workData'
 
-interface WorkItem {
-  id: number
-  title: string
-  category: Category
-  icon: string
-  imagePaths: string[]
-  description: string
-  menuPath : string
-  shortDesc: string
-}
+// 검색 유틸
+import { searchWork } from '@/lib/search'
 
 // 음성인식 타입 선언
-
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
 
 interface SpeechRecognition extends EventTarget {
@@ -60,188 +52,6 @@ declare global {
   }
 }
 
-const workData: WorkItem[] = [
-  {
-    id: 1,
-    title: '기금제도 푸른씨앗 신청하기',
-    category: '신청하기',
-    icon: '🌱',
-    imagePaths: ['/images/004.jpg', '/images/005.jpg', '/images/006.jpg', '/images/007.jpg', '/images/008.jpg', '/images/009.jpg', '/images/010.jpg', '/images/011.jpg'],
-    description: '푸른씨앗 기금제도 가입을 위한 절차 및 필요 서류 안내',
-    menuPath: '홈페이지 > 신청하기 > 가입 > 기금제도 신청하기(사업장)',
-    shortDesc: '푸른씨앗 신청'
-  },
-  {
-    id: 2,
-    title: '신규직원 등록하기',
-    category: '직원관리',
-    icon: '👤',
-    imagePaths: ['/images/013.jpg', '/images/014.jpg', '/images/015.jpg', '/images/016.jpg'],
-    description: '신규 직원 등록 절차 및 필수 입력 정보 안내',
-    menuPath: '홈페이지 > 신청하기 > 가입자관리',
-    shortDesc: '직원 등록'
-  },
-  {
-    id: 3,
-    title: '급여변경하기',
-    category: '직원관리',
-    icon: '💰',
-    imagePaths: ['/images/017.jpg'],
-    description: '직원 급여 변경 신청 및 처리 절차 안내',
-    menuPath: '홈페이지 > 신청하기 > 부담금 > 가입자 연간(예상)임금총액변경',
-    shortDesc: '급여 변경'
-  },
-  {
-    id: 4,
-    title: '퇴사 - 지급신청',
-    category: '직원관리',
-    icon: '📋',
-    imagePaths: ['/images/026.jpg', '/images/027.jpg'],
-    description: '퇴직금 지급 신청 절차 및 필요 서류 안내',
-    menuPath: '홈페이지 > 신청하기 > 지급 > 퇴직급여 지급신청',
-    shortDesc: '퇴사 지급신청'
-  },
-  {
-    id: 5,
-    title: '퇴사 - 지급신청현황',
-    category: '직원관리',
-    icon: '📊',
-    imagePaths: ['/images/035.jpg', '/images/036.jpg'],
-    description: '퇴직금 지급 신청 현황 조회 방법',
-    menuPath: '홈페이지 > 조회하기 > 지급',
-    shortDesc: '지급신청현황'
-  },
-  {
-    id: 6,
-    title: '사용자 납입 희망 금액 수시납부 처리하기',
-    category: '부담금',
-    icon: '💳',
-    imagePaths: ['/images/018.jpg'],
-    description: '수시 납부 신청 및 처리 방법 안내',
-    menuPath: '홈페이지 > 신청하기 > 부담금 > 부담금 수시납입 > 수시납입신청',
-    shortDesc: '수시 납부'
-  },
-  {
-    id: 7,
-    title: '사용자 납입 희망 금액 변경하기',
-    category: '부담금',
-    icon: '💵',
-    imagePaths: ['/images/019.jpg'],
-    description: '정기부담금 납입 희망 금액 변경 안내',
-    menuPath: '홈페이지 > 신청하기 > 부담금 > 부담금 수시납입 > 정기부담금 납입희망금액 변경신청',
-    shortDesc: '납입희망금액 변경'
-  },
-  {
-    id: 8,
-    title: '(과거분) 일시전환부담금 납입신청',
-    category: '부담금',
-    icon: '📅',
-    imagePaths: ['/images/023.jpg', '/images/024.jpg'],
-    description: '과거분 일시전환부담금 납입 신청 절차',
-    menuPath: '홈페이지 > 신청하기 > 부담금 > 일시전환부담금 납입신청',
-    shortDesc: '과거분 납입'
-  },
-  {
-    id: 9,
-    title: '(해당기간 ~ 연 1회) 부담금 정산신청하기',
-    category: '부담금',
-    icon: '📊',
-    imagePaths: ['/images/020.jpg', '/images/021.jpg', '/images/022.jpg'],
-    description: '연간 부담금 정산 신청 절차 및 기한 안내',
-    menuPath: '홈페이지 > 신청하기 > 부담금 > 부담금 정산신청',
-    shortDesc: '정산 신청'
-  },
-  {
-    id: 10,
-    title: '자동이체관리',
-    category: '부담금',
-    icon: '🔄',
-    imagePaths: ['/images/025.jpg'],
-    description: '자동이체 등록, 변경, 해지 방법 안내',
-    menuPath: '홈페이지 > 신청하기 > 부담금 > 자동이체관리',
-    shortDesc: '자동이체'
-  },
-  {
-    id: 11,
-    title: '기타사항 변경 (근로자 정보, 퇴직급여 담당자 변경)',
-    category: '기타',
-    icon: '✏️',
-    imagePaths: ['/images/007.jpg'],
-    description: '',
-    menuPath: '근로자 정보 변경 : 신청하기 > 가입자 관리\n퇴직급여 담당자 변경 : 신청하기 > 퇴직급여담당자 관리',
-    shortDesc: '정보 변경'
-  },
-  {
-    id: 12,
-    title: '온라인 신청 현황',
-    category: '기타',
-    icon: '🖥️',
-    imagePaths: ['/images/029.jpg'],
-    description: '온라인으로 신청한 업무 처리 현황 조회',
-    menuPath: '홈페이지 > 조회하기 > 가입 > 서류등록현황',
-    shortDesc: '신청 현황'
-  },
-  {
-    id: 13,
-    title: '부담금 납입 안내 (명세서)',
-    category: '부담금',
-    icon: '📄',
-    imagePaths: ['/images/030.jpg'],
-    description: '부담금 납입 명세서 조회 및 출력 방법',
-    menuPath: '홈페이지 > 조회하기 > 부담금 > 부담금납입 안내',
-    shortDesc: '납입 명세서'
-  },
-  {
-    id: 14,
-    title: '부담금 납입 내역 (기존 납입 내역)',
-    category: '부담금',
-    icon: '📑',
-    imagePaths: ['/images/031.jpg'],
-    description: '기존 부담금 납입 내역 조회 방법',
-    menuPath: '홈페이지 > 조회하기 > 부담금 > 부담금납입 내역',
-    shortDesc: '납입 내역'
-  },
-  {
-    id: 15,
-    title: '재정지원금 - 지원금 신청결과',
-    category: '재정지원',
-    icon: '✅',
-    imagePaths: ['/images/033.jpg'],
-    description: '재정지원금 신청 결과 확인 방법',
-    menuPath: '홈페이지 > 조회하기 > 부담금 > 재정지원금 신청결과',
-    shortDesc: '신청 결과'
-  },
-  {
-    id: 16,
-    title: '재정지원금 - 지원금 지급내역',
-    category: '재정지원',
-    icon: '💵',
-    imagePaths: ['/images/034.jpg'],
-    description: '재정지원금 지급 내역 조회 방법',
-    menuPath: '홈페이지 > 조회하기 > 부담금 > 재정지원금 지급내역',
-    shortDesc: '지급 내역'
-  },
-  {
-    id: 17,
-    title: '증명서 발급',
-    category: '기타',
-    icon: '📜',
-    imagePaths: ['/images/038.jpg'],
-    description: '각종 증명서 발급 신청 및 출력 방법',
-    menuPath: '홈페이지 > 조회하기 > 증명서발급',
-    shortDesc: '증명서 발급'
-  },
-  {
-    id: 18,
-    title: '서식 자료실',
-    category: '기타',
-    icon: '📁',
-    imagePaths: ['/images/007.jpg'],
-    description: '업무별 필요 서식 다운로드 및 작성 방법',
-    menuPath: '홈페이지 > 고객센터 > 서식자료실',
-    shortDesc: '서식 자료실'
-  }
-]
 
 const categoryColors: Record<Category, string> = {
   '신청하기': '#4CAF50',
@@ -263,10 +73,43 @@ export default function Home() {
   const [supported, setSupported] = useState(false)
   const [listening, setListening] = useState(false)
   const [interim, setInterim] = useState('')
-  const [finals, setFinals] = useState<string[]>([])
+  const [voiceMessage, setVoiceMessage] = useState('대기 중...')
   const recRef = useRef<SpeechRecognition | null>(null)
 
   const touchStartXRef = useRef<number | null>(null)
+
+  const stopListening = useCallback(() => {
+    try { recRef.current?.stop?.() } catch {}
+    setListening(false)
+    setInterim('')
+  }, [])
+
+  const openWorkById = useCallback((matchId: string | number) => {
+    const target = workData.find(work => String(work.id) === String(matchId))
+    if (!target) {
+      setVoiceMessage('찾은 업무가 목록과 일치하지 않습니다.')
+      return
+    }
+
+    setSelectedCategory(target.category)
+    setSelectedWork(target)
+    setCurrentImage(0)
+    setIsModalOpen(true)
+  }, [])
+
+  const handleVoiceQuery = useCallback((spoken: string) => {
+    const query = spoken.trim()
+    if (!query) return
+
+    const { result } = searchWork(query, workData)
+    if (result) {
+      openWorkById(result.item.id)
+      setVoiceMessage(`"${query}" → ${result.item.title}`)
+      stopListening()
+    } else {
+      setVoiceMessage(`"${query}"와 일치하는 업무를 찾지 못했어요.`)
+    }
+  }, [openWorkById, stopListening])
 
   // 최초 접속 시 1회만 표시 (세션 기준)
   useEffect(() => {
@@ -282,6 +125,13 @@ export default function Home() {
     setCurrentImage(0)
   }, [selectedWork?.id])
 
+  useEffect(() => {
+    if (isVoiceOpen) {
+      setVoiceMessage('대기 중...')
+      setInterim('')
+    }
+  }, [isVoiceOpen])
+
   // Esc로 모달 닫기
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -292,7 +142,7 @@ export default function Home() {
   };
     if (isModalOpen || isVoiceOpen) window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [isModalOpen, isVoiceOpen])
+  }, [isModalOpen, isVoiceOpen, stopListening])
 
   const filteredWorks = useMemo(
     () => selectedCategory === '전체'
@@ -344,11 +194,10 @@ export default function Home() {
     touchStartXRef.current = null
   }
 
-  // 음성인식 준비
   useEffect(() => {
-     const SR = (window.SpeechRecognition || window.webkitSpeechRecognition) as SpeechRecognitionConstructor | undefined;
-     setSupported(!!SR)
-     if (SR) {
+    const SR = (window.SpeechRecognition || window.webkitSpeechRecognition) as SpeechRecognitionConstructor | undefined;
+    setSupported(!!SR)
+    if (SR) {
       const rec = new SR()
       rec.lang = 'ko-KR'
       rec.interimResults = true
@@ -359,11 +208,8 @@ export default function Home() {
         for (let i = e.resultIndex; i < e.results.length; i++) {
           const t = (e.results[i][0]?.transcript || '').trim()
           if (e.results[i].isFinal) {
-            setFinals(prev => [...prev, t])
             setInterim('')
-
-            // 최종 문장 처리 이벤트 (여기에 의도 분류 연결하면 됨)
-            console.log('[인식된 음성] : ', t)
+            handleVoiceQuery(t)
           } else {
             interimTxt = t
           }
@@ -375,12 +221,12 @@ export default function Home() {
       rec.onerror = () => setListening(false)
 
       recRef.current = rec
-     }
+    }
 
-     return () => {
+    return () => {
       try { recRef.current?.stop?.() } catch {}
-     }
-  }, [])
+    }
+  }, [handleVoiceQuery])
 
   const startListening = () => {
     if (!recRef.current) return
@@ -388,14 +234,10 @@ export default function Home() {
       recRef.current.start()
       setListening(true)
       setInterim('')
-      setFinals([])
+      setVoiceMessage('듣는 중...')
     } catch (e) {
       console.warn(e)
     }
-  }
-
-  const stopListening = () => {
-    try { recRef.current?.stop?.() } catch {}
   }
 
   return (
@@ -674,7 +516,7 @@ export default function Home() {
 
                   {/* 인식된 텍스트 화면에 나타내기 */}
                   <div style={{ textAlign: "center", fontSize: "1.1rem", minHeight: 24, color: "#333" }}>
-                    {interim || finals.slice(-1)[0] || "대기 중..."}
+                    {interim || voiceMessage}
                   </div>
                 </div>
 
