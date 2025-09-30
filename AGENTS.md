@@ -5,6 +5,19 @@
 - 초기 1회 노출 환영 모달(`sessionStorage` 플래그)과 ESC/바깥 클릭으로 닫히는 업무 상세 모달 등 접근성을 고려한 상호작용이 구현되어 있습니다.
 - 업무 데이터(`workData`)는 다수의 이미지 경로와 요약/메뉴 경로를 포함한 하드코딩 배열로 관리되며, `public/images/*.jpg` 및 명함 이미지를 참조합니다.
 - `layout.tsx`에서 메타데이터(Open Graph 포함)와 Google Inter 폰트를 적용해 배포용 기본 구성을 커스터마이징했습니다.
+   > ### 2025-09-30 기준 업데이트 내용
+   - 간단 전처리: `normalizeText()`로 소문자화 + 조사 제거
+   - 점수화 로직: `scoreWorkItem()`, `searchWork()` 구현
+      - 가중치 규칙: 
+         - 제목 정확 일치 +100
+         - 제목 startsWith +40
+         - 토큰 교집합 비율(0~50)
+         - 메뉴 경로 포함 +20
+         - Levenshtein ≤1 → +25, =2 → +10
+      - threshold: 40
+   - 음성 인식 모달에 연결: 최종 인식 문장 → `searchWork()` 호출 → 최고 점수 항목을 자동으로 상세 모달로 띄움
+   - 검색 실패 시 `"일치하는 업무 없음"` 메시지를 표시
+   - 테스트 : 브라우저 수동 테스트로 정확한 키워드 일치 기본 케이스 확인
 
 ## 2. 추가 개발 계획
 - **Phase 1 - 요구사항 및 검색 기준 확정:** 검색 대상 필드(`title`, `shortDesc`, `menuPath`, 상세 설명)와 우선순위를 정의하고, 최적 결과 판정 기준(정확 일치 > 부분 일치 > 간단 퍼지 등)을 문서화합니다.
@@ -31,10 +44,17 @@
 ├─ public/
 │  ├─ 000.jpg, business_card.png, *.svg
 │  └─ images/001.jpg ~ 039.jpg 등 업무 안내 이미지
-└─ src/app/
-   ├─ globals.css
-   ├─ layout.tsx            # 메타데이터 및 Inter 폰트 적용
-   └─ page.tsx / page.module.css
+└─ src/
+   ├─ app/
+   │  ├─ globals.css
+   │  ├─ layout.css          # 메타데이터 및 Inter 폰트 적용
+   │  ├─ page.tsx            # 메인 UI + 음성/검색 연동
+   │  └─ page.module.css     # 스타일
+   ├─ data/
+   │  └─ workData.ts         # 카드/검색 공통 데이터 소스
+   └─ lib/
+      └─ search.ts           # 전처리·점수화 로직
+
 ```
 
 ## 5. 커밋 규칙 (기존 로그 기준)
