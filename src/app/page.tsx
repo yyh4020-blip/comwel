@@ -18,10 +18,45 @@ interface WorkItem {
 }
 
 // 음성인식 타입 선언
+
+type SpeechRecognitionConstructor = new () => SpeechRecognition;
+
+interface SpeechRecognition extends EventTarget {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  start(): void;
+  stop(): void;
+  onresult: (e: SpeechRecognitionEvent) => void;
+  onend: (() => void) | null;
+  onerror: ((e: Event) => void) | null;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  resultIndex: number;
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionResultList {
+  length: number;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionResult {
+  length: number;
+  isFinal: boolean;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
 declare global {
   interface Window {
-    webkitSpeechRecognition? : any
-    SpeechRecognition? : any
+    webkitSpeechRecognition? : SpeechRecognitionConstructor;
+    SpeechRecognition? : SpeechRecognitionConstructor;
   }
 }
 
@@ -229,7 +264,7 @@ export default function Home() {
   const [listening, setListening] = useState(false)
   const [interim, setInterim] = useState('')
   const [finals, setFinals] = useState<string[]>([])
-  const recRef = useRef<any>(null)
+  const recRef = useRef<SpeechRecognition | null>(null)
 
   const touchStartXRef = useRef<number | null>(null)
 
@@ -300,14 +335,18 @@ export default function Home() {
     if (!hasMultiple || touchStartXRef.current === null) return
     const delta = e.changedTouches[0].clientX - touchStartXRef.current
     if (Math.abs(delta) > 40) {
-      delta > 0 ? goPrev() : goNext()
+      if (delta > 0) {
+        goPrev()
+      } else {
+        goNext()
+      }
     }
     touchStartXRef.current = null
   }
 
   // 음성인식 준비
   useEffect(() => {
-     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+     const SR = (window.SpeechRecognition || window.webkitSpeechRecognition) as SpeechRecognitionConstructor | undefined;
      setSupported(!!SR)
      if (SR) {
       const rec = new SR()
@@ -315,7 +354,7 @@ export default function Home() {
       rec.interimResults = true
       rec.continuous = true
 
-      rec.onresult = (e: any) => {
+      rec.onresult = (e: SpeechRecognitionEvent) => {
         let interimTxt = ''
         for (let i = e.resultIndex; i < e.results.length; i++) {
           const t = (e.results[i][0]?.transcript || '').trim()
@@ -619,7 +658,7 @@ export default function Home() {
                 <>
                 <div className={styles.infoCard}>
                   <p className="text-sm">
-                    이렇게 말해보세요! "신규 직원 등록하고 싶어요", "푸른씨앗 가입하려면?", "이번달 돈이 안 나갔어요"
+                    이렇게 말해보세요! &quot;신규 직원 등록하고 싶어요&quot;, &quot;푸른씨앗 가입하려면?&quot;, &quot;이번달 돈이 안 나갔어요&quot;
                   </p>
                 </div>
 
