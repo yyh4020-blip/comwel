@@ -182,21 +182,19 @@ export function matchIntent(
       score: 0,
       reason: 'no_intents_registered',
     };
-  }
-
-  if (bestScore < threshold) {
+  } else if (bestScore < threshold) {
     return {
       intentId: null,
       intent: null,
       score: Math.max(0, bestScore),
       reason: `low_confidence:${bestIntent.id}:${bestScore};${bestReasons.join('|')}`,
     };
+  } else {
+    return {
+      intentId: bestIntent.id,
+      intent: bestIntent,
+      score: bestScore,
+      reason: bestReasons.join('|'),
+    };
   }
-
-  return {
-    intentId: bestIntent.id,
-    intent: bestIntent,
-    score: bestScore,
-    reason: bestReasons.join('|'),
-  };
 }
