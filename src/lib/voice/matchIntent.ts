@@ -182,17 +182,22 @@ export function matchIntent(
       score: 0,
       reason: 'no_intents_registered',
     };
-  } else if (bestScore < threshold) {
+  } 
+
+  // bestIntent가 null이 아님을 알리기 위해 타입 좁히기
+  const chosenIntent: VoiceIntent = bestIntent;
+  
+  if (bestScore < threshold) {
     return {
       intentId: null,
       intent: null,
       score: Math.max(0, bestScore),
-      reason: `low_confidence:${bestIntent.id}:${bestScore};${bestReasons.join('|')}`,
+      reason: `low_confidence:${chosenIntent.id}:${bestScore};${bestReasons.join('|')}`,
     };
   } else {
     return {
-      intentId: bestIntent.id,
-      intent: bestIntent,
+      intentId: chosenIntent.id,
+      intent: chosenIntent,
       score: bestScore,
       reason: bestReasons.join('|'),
     };
