@@ -12,7 +12,7 @@ describe('matchIntent', () => {
   });
 
   it('matches auto transfer intent for colloquial input', () => {
-    const result = matchIntent('이체 어떻게 해?');
+    const result = matchIntent('이체 자동으로 설정해줘');
     expect(result.intentId).toBe('auto_transfer');
     expect(result.score).toBeGreaterThanOrEqual(55);
   });

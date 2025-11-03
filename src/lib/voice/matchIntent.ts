@@ -175,15 +175,21 @@ export function matchIntent(
     }
   });
 
-  if (!bestIntent || bestScore < threshold) {
-    const reason = bestIntent
-      ? `low_confidence:${bestIntent.id}:${bestScore};${bestReasons.join('|')}`
-      : 'no_intents_registered';
+  if (!bestIntent) {
+    return {
+      intentId: null,
+      intent: null,
+      score: 0,
+      reason: 'no_intents_registered',
+    };
+  }
+
+  if (bestScore < threshold) {
     return {
       intentId: null,
       intent: null,
       score: Math.max(0, bestScore),
-      reason,
+      reason: `low_confidence:${bestIntent.id}:${bestScore};${bestReasons.join('|')}`,
     };
   }
 
