@@ -9,6 +9,7 @@ import { workData, WorkItem, Category } from '@/data/workData'
 
 // 검색 유틸
 import { searchWork } from '@/lib/search'
+import { matchIntent } from '@/lib/voice/matchIntent'
 
 // 음성인식 타입 선언
 type SpeechRecognitionConstructor = new () => SpeechRecognition;
@@ -100,6 +101,14 @@ export default function Home() {
   const handleVoiceQuery = useCallback((spoken: string) => {
     const query = spoken.trim()
     if (!query) return
+
+    const intentResult = matchIntent(query)
+    if (intentResult.intent) {
+      openWorkById(intentResult.intent.workId)
+      setVoiceMessage(`"${query}" → ${intentResult.intent.displayName}`)
+      stopListening()
+      return
+    }
 
     const { result } = searchWork(query, workData)
     if (result) {
