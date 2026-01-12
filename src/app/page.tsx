@@ -275,7 +275,7 @@ export default function Home() {
               </div>
 
               <div className={styles.welcomeBody}>
-                <p>안녕하십니까. 근로복지공단 퇴직연금 담당자 <b>윤용현 전문관</b>입니다.</p>
+                <p>안녕하십니까. 근로복지공단 퇴직연금 담당자입니다.</p>
                 <p>퇴직연금 관련 행정업무가 처음이신가요? 익숙하지 않은 용어와 복잡한 절차 때문에 막막하셨던 분들을 위해, 부담을 덜어드리고자 이 안내문을 정성껏 준비하였습니다.</p>
                 <p>하나하나 차근차근 따라오실 수 있도록, 그림과 실제 예시를 곁들여 <b>‘그림설명서’</b> 형식으로 친절하게 구성했습니다. 이 안내문이 여러분의 소중한 시간을 절약하고, 보다 편안하게 업무를 마치시는 데 작은 도움이 되기를 바랍니다.</p>
               </div>
@@ -447,7 +447,7 @@ export default function Home() {
                 <div className={styles.infoCard}>
                   <h4>ℹ️ 안내</h4>
                   <p>
-                    안녕하세요. 근로복지공단 퇴직연금 담당자 윤용현 전문관입니다.
+                    안녕하세요. 근로복지공단 퇴직연금 담당자입니다.
                   </p>
                   <p>
                     행정 업무가 낯설고 힘드시죠?
@@ -464,7 +464,7 @@ export default function Home() {
                 <div className={styles.infoCard}>
                   <h4>📞 문의</h4>
                   <Image
-                    src="/business_card.png"
+                    src="/sample_business_card.png"
                     alt="업무 담당자 명함"
                     width={500}
                     height={250}
