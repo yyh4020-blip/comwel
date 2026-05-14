@@ -84,7 +84,7 @@ export const workData: WorkItem[] = [
     title: '사용자 납입 희망 금액 수시납부 처리하기',
     category: '부담금',
     icon: '💳',
-    imagePaths: ['/images/018.jpg'],
+    imagePaths: ['/images/021.jpg'],
     description: '수시 납부 신청 및 처리 방법 안내',
     menuPath: '홈페이지 > 신청하기 > 부담금 > 부담금 수시납입 > 수시납입신청',
     shortDesc: '수시 납부',
