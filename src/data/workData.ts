@@ -95,7 +95,7 @@ export const workData: WorkItem[] = [
     title: '사용자 납입 희망 금액 변경하기',
     category: '부담금',
     icon: '💵',
-    imagePaths: ['/images/021.jpg'],
+    imagePaths: ['/images/022.jpg'],
     description: '정기부담금 납입 희망 금액 변경 안내',
     menuPath: '홈페이지 > 신청하기 > 부담금 > 부담금 수시납입 > 정기부담금 납입희망금액 변경신청',
     shortDesc: '납입희망금액 변경',
