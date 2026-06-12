@@ -62,12 +62,20 @@ const categoryColors: Record<Category, string> = {
   '기타': '#607D8B'
 }
 
+const workNoticePopup = {
+  workId: 5,
+  title: '퇴사 지급신청 안내',
+  imageSrc: '/images/029.jpg',
+  fileName: 'retirement-payment-guide.jpg'
+}
+
 export default function Home() {
   const [selectedWork, setSelectedWork] = useState<WorkItem | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<Category | '전체'>('전체')
   const [currentImage, setCurrentImage] = useState(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showWelcome, setShowWelcome] = useState(false); // ✅ 인사말 모달
+  const [showWorkNotice, setShowWorkNotice] = useState(false)
 
   // 음성인식 모달
   const [isVoiceOpen, setIsVoiceOpen] = useState(false)
@@ -141,17 +149,22 @@ export default function Home() {
     }
   }, [isVoiceOpen])
 
+  useEffect(() => {
+    setShowWorkNotice(isModalOpen && selectedWork?.id === workNoticePopup.workId)
+  }, [isModalOpen, selectedWork?.id])
+
   // Esc로 모달 닫기
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        setShowWorkNotice(false)
         setIsModalOpen(false)
         if (isVoiceOpen) {setIsVoiceOpen (false); stopListening() }
     }
   };
-    if (isModalOpen || isVoiceOpen) window.addEventListener('keydown', onKey)
+    if (isModalOpen || isVoiceOpen || showWorkNotice) window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [isModalOpen, isVoiceOpen, stopListening])
+  }, [isModalOpen, isVoiceOpen, showWorkNotice, stopListening])
 
   const filteredWorks = useMemo(
     () => selectedCategory === '전체'
@@ -247,6 +260,43 @@ export default function Home() {
     } catch (e) {
       console.warn(e)
     }
+  }
+
+  const printWorkNotice = () => {
+    const printWindow = window.open('', '_blank', 'width=900,height=700')
+    if (!printWindow) return
+
+    printWindow.document.write(`
+      <!doctype html>
+      <html>
+        <head>
+          <title>${workNoticePopup.title}</title>
+          <style>
+            body {
+              margin: 0;
+              padding: 24px;
+              display: flex;
+              justify-content: center;
+              background: #fff;
+            }
+            img {
+              max-width: 100%;
+              height: auto;
+            }
+          </style>
+        </head>
+        <body>
+          <img src="${workNoticePopup.imageSrc}" alt="${workNoticePopup.title}" />
+          <script>
+            window.onload = function () {
+              window.focus();
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `)
+    printWindow.document.close()
   }
 
   return (
@@ -350,7 +400,10 @@ export default function Home() {
           className={styles.modalOverlay}
           onClick={(e) => {
             // 배경 클릭 시 닫기 (모달 내부 클릭은 유지)
-            if (e.target === e.currentTarget) setIsModalOpen(false)
+            if (e.target === e.currentTarget) {
+              setShowWorkNotice(false)
+              setIsModalOpen(false)
+            }
           }}
           role="dialog"
           aria-modal="true"
@@ -362,7 +415,16 @@ export default function Home() {
                 {selectedWork.category}
               </span>
               <h2 className={styles.detailTitle}>{selectedWork.title}</h2>
-              <button className={styles.closeBtn} aria-label="닫기" onClick={() => setIsModalOpen(false)}>×</button>
+              <button
+                className={styles.closeBtn}
+                aria-label="닫기"
+                onClick={() => {
+                  setShowWorkNotice(false)
+                  setIsModalOpen(false)
+                }}
+              >
+                ×
+              </button>
             </header>
 
             <div className={styles.modalBody}>
@@ -473,6 +535,52 @@ export default function Home() {
                 </div>
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showWorkNotice && selectedWork?.id === workNoticePopup.workId && (
+        <div
+          className={styles.modalOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${workNoticePopup.title} 팝업 안내`}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowWorkNotice(false) }}
+        >
+          <div className={styles.workNoticeModal}>
+            <header className={styles.modalHeader} style={{ borderColor: '#2196F3' }}>
+              <span className={styles.detailCategory} style={{ backgroundColor: '#2196F3' }}>
+                안내
+              </span>
+              <h2 className={styles.detailTitle}>{workNoticePopup.title}</h2>
+              <button className={styles.closeBtn} aria-label="닫기" onClick={() => setShowWorkNotice(false)}>×</button>
+            </header>
+
+            <div className={styles.workNoticeBody}>
+              <div className={styles.workNoticeImageFrame}>
+                <Image
+                  src={workNoticePopup.imageSrc}
+                  alt={workNoticePopup.title}
+                  width={900}
+                  height={600}
+                  className={styles.workNoticeImage}
+                  priority
+                />
+              </div>
+
+              <div className={styles.workNoticeActions}>
+                <a
+                  className={styles.noticeActionBtn}
+                  href={workNoticePopup.imageSrc}
+                  download={workNoticePopup.fileName}
+                >
+                  이미지 다운로드
+                </a>
+                <button className={styles.noticeActionBtn} type="button" onClick={printWorkNotice}>
+                  이미지 출력
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -489,6 +489,84 @@
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
+/* ===== 업무별 안내 이미지 팝업 ===== */
+.workNoticeModal {
+    width: min(880px, 96vw);
+    max-height: 92vh;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.workNoticeBody {
+    padding: 1.25rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.workNoticeImageFrame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.workNoticeImage {
+    width: 100%;
+    height: auto;
+    max-height: 68vh;
+    object-fit: contain;
+}
+
+.workNoticeActions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.noticeActionBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.65rem 1.25rem;
+    border: 0;
+    border-radius: 8px;
+    background: #2196F3;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.noticeActionBtn:hover {
+    background: #1976D2;
+}
+
+@media (max-width: 480px) {
+    .workNoticeBody {
+        padding: 1rem;
+    }
+
+    .workNoticeActions {
+        flex-direction: column;
+    }
+
+    .noticeActionBtn {
+        width: 100%;
+    }
+}
+
 /* ===== Welcome (첫 접속 모달) ===== */
 .welcomeModal {
     position: relative;
