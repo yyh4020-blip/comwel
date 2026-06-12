@@ -65,8 +65,8 @@ const categoryColors: Record<Category, string> = {
 const workNoticePopup = {
   workId: 5,
   title: '퇴사 지급신청 안내',
-  imageSrc: '/images/029.jpg',
-  fileName: 'retirement-payment-guide.jpg'
+  imageSrc: '/popup01.png',
+  fileName: 'popup01.png'
 }
 
 export default function Home() {
